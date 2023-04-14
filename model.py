@@ -2,7 +2,7 @@ import os
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.applications.efficientnet import EfficientNetB7, preprocess_input
+from tensorflow.keras.applications.resnet_v2 import ResNet50V2, preprocess_input
 from tensorflow.keras.layers import Input, Flatten, Dense
 from tensorflow.keras.models import Model
 
@@ -23,21 +23,21 @@ val_datagen = ImageDataGenerator(
 
 train_generator = train_datagen.flow_from_directory(
     train_dir,
-    target_size=(600, 600),
+    target_size=(224, 224),
     batch_size=32,
     class_mode='binary'
 )
 
 val_generator = val_datagen.flow_from_directory(
     val_dir,
-    target_size=(600, 600),
+    target_size=(224, 224),
     batch_size=32,
     class_mode='binary'
 )
 
-base_model = EfficientNetB7(
+base_model = ResNet50V2(
     include_top=False,
-    input_tensor=Input(shape=(600, 600, 3)),
+    input_tensor=Input(shape=(224, 224, 3)),
     weights='imagenet'
 )
 
@@ -57,7 +57,7 @@ model.compile(
 model.fit(
     train_generator,
     steps_per_epoch=len(train_generator),
-    epochs=10,
+    epochs=2,
     validation_data=val_generator,
     validation_steps=len(val_generator)
 )
